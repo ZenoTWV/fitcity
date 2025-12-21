@@ -23,7 +23,7 @@ const heroStats = [
 const heroMedia = {
   background: {
     webp: '',
-    jpg: '/upscalemedia-transformed(3).jpeg',
+    jpg: '/banner_v3.png',
     alt: '',
   },
   video: {
