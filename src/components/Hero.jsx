@@ -10,6 +10,11 @@ import VideoDialog from './VideoDialog';
 
 const Hero = () => {
   const [showVideo, setShowVideo] = useState(false);
+  const backgroundWebp = heroMedia.background.webp;
+  const backgroundJpg = heroMedia.background.jpg;
+  const hasWebp = Boolean(backgroundWebp);
+  const hasJpg = Boolean(backgroundJpg);
+  const fallbackImage = hasWebp ? backgroundWebp : backgroundJpg;
 
   return (
     <>
@@ -17,22 +22,35 @@ const Hero = () => {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `image-set(url("${heroMedia.background.webp}") type("image/webp"), url("${heroMedia.background.jpg}") type("image/jpeg"))`,
+            backgroundImage: hasWebp && hasJpg
+              ? `image-set(url("${backgroundWebp}") type("image/webp"), url("${backgroundJpg}") type("image/jpeg"))`
+              : `url("${fallbackImage}")`,
           }}
           aria-hidden="true"
         />
         <noscript>
-          <picture>
-            <source srcSet={heroMedia.background.webp} type="image/webp" />
+          {hasWebp && hasJpg ? (
+            <picture>
+              <source srcSet={backgroundWebp} type="image/webp" />
+              <img
+                src={backgroundJpg}
+                alt=""
+                aria-hidden="true"
+                className="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
+          ) : (
             <img
-              src={heroMedia.background.jpg}
+              src={fallbackImage}
               alt=""
               aria-hidden="true"
               className="h-full w-full object-cover"
               loading="lazy"
               decoding="async"
             />
-          </picture>
+          )}
         </noscript>
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/60" />
 
