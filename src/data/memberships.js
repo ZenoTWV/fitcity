@@ -147,9 +147,9 @@ const planGroups = [
     description: 'Alle fitness memberships: voordeel, duo, flexibel en proef.',
     plans: [
       'smart-deal',
+      'fit-deal-halfjaar',
       'duo-deal',
       'ultimate-fit',
-      'fit-deal-halfjaar',
       'maand-flex',
       'quick-deal-3mnd',
     ].map(

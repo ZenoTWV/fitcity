@@ -4,9 +4,9 @@ Alle prijzen in **€**. Jaar = 12 maanden tenzij anders vermeld.
 
 ## Fitness
 1) Smart Deal — € 24,50 / maand — 12 maanden onbeperkt fitness. *(Populair)*
-2) Duo Deal — € 39,50 / maand — 12 maanden onbeperkt fitness voor twee passen.
-3) Ultimate Fit Deal — prijs op aanvraag — 12 maanden onbeperkt fitness + (kick)boksen.
-4) Fit Deal (6 mnd) — € 29,50 / maand — 6 maanden onbeperkt fitness.
+2) Fit Deal (6 mnd) — € 29,50 / maand — 6 maanden onbeperkt fitness.
+3) Duo Deal — € 39,50 / maand — 12 maanden onbeperkt fitness voor twee passen.
+4) Ultimate Fit Deal — prijs op aanvraag — 12 maanden onbeperkt fitness + (kick)boksen.
 5) Maand Flex — € 37,00 / maand — maandelijks opzegbaar onbeperkt fitness.
 6) Quick Deal (3 mnd) — € 99,00 eenmalig — 3 maanden onbeperkt fitness.
 
