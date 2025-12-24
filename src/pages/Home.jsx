@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import clsx from 'clsx';
 import { Dumbbell, Sparkles, Shield, Activity, Star } from 'lucide-react';
 import Hero from '../components/Hero';
 import Section from '../components/Section';
@@ -38,7 +39,7 @@ const socialStats = [
 ];
 
 const kickboxingCards = [
-  { image: '/kickboxing.webp', title: '(Kick)Boksen', description: 'Techniek, conditie en sparren in kleine groepen.' },
+  { image: '/kickboxing.webp', title: 'Kickboksen', description: 'Techniek, conditie en sparren in kleine groepen.' },
   { image: '/kinderkickboksen.jpg', title: 'Kinderkickboksen', description: 'Speelse lessen met focus op zelfvertrouwen.' },
 ];
 
@@ -46,7 +47,8 @@ const kickboxingSchedule = [
   { label: 'Volwassenen', detail: 'Avondlessen op ma/wo/vr + zaterdagochtend' },
   { label: 'Intro & techniek', detail: 'Regelmatig ingepland, aanmelden via app of balie' },
   { label: 'Kids', detail: 'Woensdag & zaterdag slots, niveaus per leeftijd' },
-  { label: 'Combi deal', detail: 'Kickboksen is inbegrepen bij Combi memberships' },
+  { label: 'Membership opties', detail: 'Kickboksen 1x p/w of onbeperkt, of all-in via Ultimate Fit Deal.' },
+  { label: 'Ultimate Fit Deal', detail: 'Onbeperkt fitness en (kick)boksen onder één membership.' },
 ];
 
 const Home = () => {
@@ -123,7 +125,7 @@ const Home = () => {
         header={{
           eyebrow: 'Abonnementen',
           title: 'Flexibele memberships zonder kleine lettertjes',
-          subtitle: 'Kies het lidmaatschap dat past bij jouw doelen en gewenste commitment.',
+          subtitle: 'Kies het lidmaatschap dat past bij jouw doelen. Kickboksen kan los of gecombineerd met fitness.',
         }}
         contentClassName="grid gap-6 md:grid-cols-3 lg:grid-cols-3"
         disableReveal
@@ -131,9 +133,11 @@ const Home = () => {
         {homeMembershipTeasers.map((plan) => (
           <PlanCard key={plan.name} plan={plan} isMostPopular={false} />
         ))}
-        <Button as={Link} to="/abonnementen" variant="ghost" className="md:col-span-3 lg:col-span-3 justify-center">
-          Bekijk alle abonnementen
-        </Button>
+        <div className="md:col-span-3 lg:col-span-3 flex justify-center">
+          <Button as={Link} to="/abonnementen" variant="ghost" className="w-full max-w-xs justify-center">
+            Bekijk alle abonnementen
+          </Button>
+        </div>
       </Section>
 
       <Section
@@ -142,13 +146,19 @@ const Home = () => {
           title: 'Samen fit worden en blijven',
           subtitle: 'We bouwen aan een inclusieve community waar iedereen zich gezien voelt.',
         }}
-        contentClassName="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]"
+        contentClassName="grid gap-6 lg:grid-cols-[minmax(320px,0.8fr)_1.2fr] items-start"
       >
-        <div className="flex flex-wrap gap-3 sm:grid sm:grid-cols-3 sm:gap-6">
-          {socialStats.map((stat) => (
-            <div key={stat.label} className="min-w-[140px] flex-1 rounded-3xl border border-white/10 bg-white/5 p-4 text-center">
-              <p className="text-3xl font-display">{stat.value}</p>
-              <p className="text-xs uppercase tracking-[0.3em] text-white/60">{stat.label}</p>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-2">
+          {socialStats.map((stat, index) => (
+            <div
+              key={stat.label}
+              className={clsx(
+                'flex flex-col justify-center rounded-3xl border border-white/10 bg-white/5 p-4 text-center',
+                index === socialStats.length - 1 ? 'lg:col-span-2' : ''
+              )}
+            >
+              <p className="text-3xl font-display leading-tight">{stat.value}</p>
+              <p className="text-xs uppercase tracking-[0.3em] text-white/60 mt-2">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -170,9 +180,9 @@ const Home = () => {
       <Section
         tone="panel"
         header={{
-          eyebrow: '(Kick)Boksen',
-          title: 'Rooster en opties in een oogopslag',
-          subtitle: 'Combi memberships geven toegang tot alle (kick)bokstrainingen.',
+          eyebrow: 'Kickboksen',
+          title: 'Rooster en memberships in een oogopslag',
+          subtitle: 'Losse kickboksdeals of all-in met Ultimate Fit (fitness + boksen).',
         }}
         contentClassName="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]"
       >
@@ -198,9 +208,14 @@ const Home = () => {
               </div>
             ))}
           </div>
-          <Button as={Link} to="/contact" variant="ghost" className="w-full justify-center">
-            Vraag naar het actuele rooster
-          </Button>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button as={Link} to="/abonnementen#kickboxing" className="w-full justify-center">
+              Bekijk kickboks memberships
+            </Button>
+            <Button as={Link} to="/contact" variant="ghost" className="w-full justify-center">
+              Vraag naar het actuele rooster
+            </Button>
+          </div>
         </div>
       </Section>
 

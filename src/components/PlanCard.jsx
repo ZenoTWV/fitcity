@@ -5,6 +5,10 @@ import Button from './ui/Button';
 
 const PlanCard = ({ plan, isMostPopular = false }) => {
   const prefersReducedMotion = useReducedMotion();
+  const formatPrice = (value) => `€ ${value.toFixed(2).replace('.', ',')}`;
+  const priceLabel =
+    typeof plan.price === 'number' ? formatPrice(plan.price) : plan.priceText ?? 'Op aanvraag';
+  const periodLabel = plan.period ? `${plan.periodPrefix ?? '/'} ${plan.period}`.trim() : '';
 
   return (
     <motion.div
@@ -30,9 +34,9 @@ const PlanCard = ({ plan, isMostPopular = false }) => {
         {plan.description && <p className="text-sm text-white/60">{plan.description}</p>}
       </div>
 
-      <div className="mt-6 flex items-end gap-2">
-        <p className="text-4xl font-display text-fitcity">€{plan.price.toFixed(2).replace('.', ',')}</p>
-        {plan.period && <p className="text-sm text-white/50">/ {plan.period}</p>}
+      <div className="mt-6 flex flex-wrap items-end gap-2">
+        <p className="text-4xl font-display text-fitcity">{priceLabel}</p>
+        {periodLabel && <p className="text-sm text-white/50">{periodLabel}</p>}
       </div>
 
       <ul className="mt-6 space-y-3 text-sm text-white/80">

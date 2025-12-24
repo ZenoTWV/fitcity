@@ -116,7 +116,7 @@ const LadiesOnly = () => {
           title: 'Kies het ritme dat bij je past',
           subtitle: 'Alle ladies only abonnementen zijn inclusief groepslessen, intake en schema op maat.',
         }}
-        contentClassName="grid gap-6 md:grid-cols-3 lg:grid-cols-4"
+        contentClassName="grid gap-6 md:grid-cols-3 lg:grid-cols-3"
         id="ladies-memberships"
       >
         {ladiesOnlyPlans.map((plan) => (

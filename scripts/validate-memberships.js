@@ -1,14 +1,8 @@
-import {
-  plans,
-  planGroups,
-  homeMembershipTeasers,
-  ladiesOnlyPlans,
-  otherPricingOptions,
-} from '../src/data/memberships.js';
+import { plans, planGroups, homeMembershipTeasers, ladiesOnlyPlans, additionalServices, oneTimeFees } from '../src/data/memberships.js';
 
 const errors = [];
 
-const requiredPlanFields = ['id', 'name', 'price', 'description', 'features'];
+const requiredPlanFields = ['id', 'name', 'description', 'features'];
 const planIds = new Set();
 
 plans.forEach((plan) => {
@@ -18,8 +12,10 @@ plans.forEach((plan) => {
     }
   });
 
-  if (typeof plan.price !== 'number' || Number.isNaN(plan.price)) {
-    errors.push(`Plan "${plan.name ?? plan.id}" has invalid price.`);
+  const hasNumericPrice = typeof plan.price === 'number' && !Number.isNaN(plan.price);
+  const hasTextPrice = typeof plan.priceText === 'string' && plan.priceText.trim().length > 0;
+  if (!hasNumericPrice && !hasTextPrice) {
+    errors.push(`Plan "${plan.name ?? plan.id}" needs a numeric price or priceText.`);
   }
 
   if (!Array.isArray(plan.features) || plan.features.length === 0) {
@@ -44,9 +40,14 @@ referencedPlans.forEach((plan) => {
   }
 });
 
-otherPricingOptions.forEach((option) => {
+const priceItems = [
+  ...additionalServices.map((item) => ({ ...item, group: 'additionalServices' })),
+  ...oneTimeFees.map((item) => ({ ...item, group: 'oneTimeFees' })),
+];
+
+priceItems.forEach((option) => {
   if (!option.name || typeof option.price !== 'number') {
-    errors.push('Each other pricing option must include a name and numeric price.');
+    errors.push(`Each ${option.group} item must include a name and numeric price.`);
   }
 });
 
