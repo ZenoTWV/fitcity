@@ -305,3 +305,5 @@ Update 2025-12-25 21:03:36:
 - Adjusted /bedankt polling cadence: every 1s for first 10s, then every 7s until timeout/terminal status.
 Update 2025-12-25 21:07:47:
 - Timeout on /bedankt now redirects to contact after 3s with prefilled signup info and alert banner on contact page.
+Update 2025-12-25 21:23:14:
+- Removed auto-redirect on payment timeout; user now stays on status page with retry/contact options.
