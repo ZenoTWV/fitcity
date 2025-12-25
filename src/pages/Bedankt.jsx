@@ -114,11 +114,8 @@ const Bedankt = () => {
     if (stored?.startDate) message += ` Startdatum: ${stored.startDate}.`;
     message += ' Kunnen jullie helpen?';
     params.set('message', message);
-    if (isFailed) {
-      params.set('alert', 'payment-timeout');
-    }
 
-    setContactHref(`/contact?${params.toString()}`);
+    setContactHref(`/contact?${params.toString()}#contact-form`);
   }, [signupId, status, isFailed]);
 
   return (

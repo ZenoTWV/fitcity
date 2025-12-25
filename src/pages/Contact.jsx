@@ -16,7 +16,6 @@ const Contact = () => {
   const [reason, setReason] = useState('contact');
   const [submitState, setSubmitState] = useState('idle');
   const [prefill, setPrefill] = useState({ name: '', email: '', phone: '', message: '' });
-  const [alertMessage, setAlertMessage] = useState('');
   const formRef = useRef(null);
   const location = useLocation();
   const contactEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT;
@@ -63,16 +62,12 @@ const Contact = () => {
     const params = new URLSearchParams(location.search);
     const searchReason = params.get('reason');
     const messageParam = params.get('message');
-    const alertParam = params.get('alert');
     setPrefill({
       name: params.get('name') || '',
       email: params.get('email') || '',
       phone: params.get('phone') || '',
       message: messageParam || '',
     });
-    if (alertParam === 'payment-timeout') {
-      setAlertMessage('We konden je betaling niet bevestigen. Vul je gegevens in, dan helpen we je verder.');
-    }
 
     if (searchReason) {
       setReason(searchReason);
@@ -80,8 +75,8 @@ const Contact = () => {
       setReason('proefles');
     }
 
-    if (location.hash) {
-      const targetId = location.hash.replace('#', '');
+    const scrollToForm = () => {
+      const targetId = (location.hash && location.hash.replace('#', '')) || 'contact-form';
       const targetElement = document.getElementById(targetId);
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -90,7 +85,8 @@ const Contact = () => {
       if (formRef.current) {
         formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    }
+    };
+    scrollToForm();
   }, [location.hash, location.search]);
 
   return (
@@ -102,12 +98,6 @@ const Contact = () => {
           subtitle: 'Vul het formulier in, we reageren doorgaans binnen een werkdag.',
         }}
       />
-
-      {alertMessage && (
-        <div className="mx-auto mb-6 max-w-5xl rounded-3xl border border-red-500/30 bg-red-500/10 px-6 py-4 text-sm text-white/80">
-          {alertMessage}
-        </div>
-      )}
 
       <Section id="contact-form" contentClassName="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.1fr_0.9fr]" disableReveal>
         <div className="space-y-6">

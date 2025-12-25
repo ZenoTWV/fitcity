@@ -71,10 +71,13 @@ const Hero = () => {
             <p className="text-lg text-white/70">
               FitCity Culemborg is de meest betaalbare gym uit de regio met moderne apparatuur en een eigen ladies only zone.
             </p>
-            <div className="inline-flex items-center gap-2 rounded-full border border-fitcity/30 bg-fitcity/10 px-4 py-2 text-sm font-semibold text-fitcity shadow-glow">
+            <Link
+              to="/contact?reason=proefles#contact-form"
+              className="inline-flex items-center gap-2 rounded-full border border-fitcity/30 bg-fitcity/10 px-4 py-2 text-sm font-semibold text-fitcity shadow-glow hover:border-fitcity/60 hover:bg-fitcity/15"
+            >
               <span className="h-2 w-2 rounded-full bg-fitcity" />
               Start het nieuwe jaar fit: plan een proefles.
-            </div>
+            </Link>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Button as={Link} to="/abonnementen" size="lg">
                 Bekijk abonnementen
