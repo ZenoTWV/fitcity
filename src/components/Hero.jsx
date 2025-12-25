@@ -128,19 +128,19 @@ const Hero = () => {
               </div>
               <div className="mt-3 text-xs text-white/60">
                 <p className="uppercase tracking-[0.3em] text-white/50">Speciale openingstijden</p>
-                <div className="mt-2 space-y-1">
+                <div className="mt-2 space-y-1 text-[13px] text-white/80">
                   {holidayHours.map((item) => {
                     const isToday = item.day.toLowerCase() === todayKey;
                     return (
                       <div
                         key={item.day}
-                        className="flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.03] px-3 py-2 text-white"
+                        className="flex items-center justify-between gap-3"
                       >
-                        <span className="font-semibold">
+                        <span className="inline-flex items-center gap-1">
+                          {isToday && <span className="h-1.5 w-1.5 rounded-full bg-fitcity" aria-label="Vandaag" />}
                           {item.day}
-                          {isToday && <span className="ml-1 text-fitcity" aria-label="Vandaag">*</span>}
                         </span>
-                        <span className="text-white/80">{item.status}</span>
+                        <span className="text-white/70">{item.status}</span>
                       </div>
                     );
                   })}
