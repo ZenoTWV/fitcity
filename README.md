@@ -1,30 +1,37 @@
-# React + Vite
+# FitCity Culemborg Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Marketing site for FitCity Culemborg built with React, Vite, Tailwind, Framer Motion, and React Router. Pages cover the homepage, memberships, Ladies Only, Kickboksen, Contact, and legal content.
 
-Currently, two official plugins are available:
+## Getting Started
+- Requirements: Node 18+ and npm.
+- Install: `npm install`
+- Develop: `npm run dev` (Vite dev server, defaults to http://localhost:5173)
+- Build: `npm run build` (outputs to `dist/`)
+- Preview production build: `npm run preview`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Quality Checks
+- `npm run lint` - ESLint across the project.
+- `npm run validate:memberships` - ensures `src/data/memberships.js` has complete pricing data and referenced plans.
+- `npm run validate:anchors` - ensures the `speciale-openingstijden` anchor exists on Contact only and the footer links to `/contact#speciale-openingstijden`.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-
-## Pricing data contract
-
-Membership and pricing content lives in `src/data/memberships.js`. When updating pricing:
-
-- Update the relevant plan in `plans` and keep `id`, `name`, `price`, `description`, and `features` populated.
-- Ensure any plan referenced by `planGroups`, `homeMembershipTeasers`, or `ladiesOnlyPlans` exists in `plans`.
-- Keep `mostPopular`, `includesKickboxing`, and `isLadiesOnly` accurate so UI filters stay correct.
-
-Run the validation script after updates:
-
-```bash
-npm run validate:memberships
+## Project Structure
 ```
+src/
+  components/        # Shared UI (Navbar, Footer, AnimatedPage, etc.)
+  data/              # Membership, CTA, site meta, and kickboxing content
+  pages/             # Home, Pricing, LadiesOnly, Kickboksen, Contact, legal pages
+  assets/            # Static visuals referenced by components
+public/              # Public assets (favicons, hero images)
+scripts/             # Validation scripts for anchors and memberships
+```
+
+## Content Notes
+- Pricing & memberships: `src/data/memberships.js`. Keep plan fields populated (`id`, `name`, `price` or `priceText`, `description`, `features`) and ensure referenced plans exist; run `npm run validate:memberships` after edits.
+- Kickboxing content: `src/data/kickboxingInfo.js` feeds the Kickboksen page.
+- Navigation/contact metadata: `src/data/siteMeta.js`; CTA labels: `src/data/ctaConfig.js`.
+- Background and typography are configured in `src/index.css` with Tailwind and Google Fonts.
+
+## Deployment & Hosting
+`npm run build` outputs static assets in `dist/`.
+- Host `dist/` on any static provider (Nginx, Apache, Netlify, Vercel, S3/CloudFront, Azure Static, etc.).
+- Because routing is client-side (React Router), add a single-page fallback so unknown paths serve `index.html` (e.g., Nginx `try_files $uri /index.html;`, Netlify `_redirects` with `/* /index.html 200`, Vercel `vercel.json` rewrite to `/`).
