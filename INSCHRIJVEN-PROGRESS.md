@@ -7,183 +7,262 @@ Build a checkout-style `/inschrijven` page with Mollie iDEAL payment integration
 
 ---
 
-## Quick Start Checklist
+## Current Status
 
-**What YOU need to do first (before Claude can code):**
-1. [x] Create Resend account + verify domain → `notifications.summitlab.dev`
-2. [x] Create Cloudflare D1 database → `fitcity-signups` (ID: `2e1e45a8-4cde-4c00-98b9-b0aaaa043758`)
-3. [x] Share the D1 database ID with Claude
+**Phase: Testing on Preview Environment**
 
-**Then Claude will:**
-1. [x] Create git branch and all code
-2. [ ] You run the database migration ← **YOUR TURN**
-3. [ ] Test locally with Mollie test mode
-4. [ ] Deploy to production
+| Milestone | Status |
+|-----------|--------|
+| Phase 1: External setup | Done |
+| Phase 2: Code implementation | Done |
+| Phase 3: Preview testing | In Progress |
+| Phase 4: Production deployment | Not started |
 
----
+**Preview URL:** https://feature-inschrijven.fitcity-cbr.pages.dev
 
-## Phase 1: External Setup (User Tasks)
+### What's Working
+- [x] Signup form with 3-step wizard
+- [x] Form validation
+- [x] Mollie iDEAL payment (test mode)
+- [x] Webhook receives payment confirmation
+- [x] Signup stored in D1 database
+- [x] Confirmation email sent via Resend
+- [x] Redirect to /bedankt page
 
-These tasks require manual action outside this environment. **Do these first before coding begins.**
-
-### 1.1 Resend Email Setup
-- [x] **USER** - Create Resend account at https://resend.com
-- [x] **USER** - Add subdomain `notifications.summitlab.dev` (for sender credibility)
-- [x] **USER** - Add DNS records in Cloudflare DNS
-- [x] **USER** - Domain verified
-- [x] **USER** - API key created and saved
-
-### 1.2 Mollie Setup (already done)
-- [x] **USER** - Mollie account is active
-- [x] **USER** - Test API key is ready
-
-### 1.3 Cloudflare D1 Database Setup
-- [x] **USER** - Install Wrangler CLI globally
-- [x] **USER** - Login to Cloudflare
-- [x] **USER** - Create D1 database: `fitcity-signups` (region: WEUR)
-- [x] **USER** - Database ID: `2e1e45a8-4cde-4c00-98b9-b0aaaa043758`
-
-### 1.4 Environment Variables (set after deployment or in `.dev.vars` for local testing)
-Cloudflare Dashboard → Pages → fitcity → Settings → Environment Variables:
-
-| Variable | Value | Notes |
-|----------|-------|-------|
-| `MOLLIE_API_KEY` | `test_xxx...` or `live_xxx...` | Your Mollie API key |
-| `MOLLIE_WEBHOOK_TOKEN` | random string | Run: `openssl rand -hex 32` |
-| `RESEND_API_KEY` | `re_xxx...` | From Resend dashboard |
-| `EMAIL_FROM` | `FitCity Culemborg <noreply@notifications.summitlab.dev>` | Sender address |
-| `APP_BASE_URL` | `https://fitcityculemborg.nl` | Or preview URL for testing |
-| `ENABLE_SEPA` | `false` | Set to `true` later for auto subscriptions |
+### Still To Test
+- [ ] All 10 membership plans work correctly
+- [ ] Edge cases (invalid data, payment cancelled, payment failed)
+- [ ] Mobile responsiveness
+- [ ] Email looks good in different email clients
+- [ ] Pre-selected plan via URL (`/inschrijven?plan=smart-deal`)
 
 ---
 
-## Phase 2: Code Implementation (Claude Tasks)
+## Testing Checklist
 
-### 2.1 Project Setup
-- [x] **CLAUDE** - Create git branch `feature/inschrijven`
-- [x] **CLAUDE** - Create `wrangler.toml` config for Cloudflare Pages Functions + D1 binding
-- [x] **CLAUDE** - Create `.dev.vars.example` template for local environment variables
+### Basic Flow Testing
+- [ ] Complete signup with each membership type
+- [ ] Verify correct price shown in Mollie checkout
+- [ ] Verify email contains correct membership details
+- [ ] Verify database record has correct data
 
-### 2.2 Database Migration
-- [x] **CLAUDE** - Create `migrations/0001_create_signups_table.sql`
-- [ ] **USER** - Run migration locally: `wrangler d1 execute fitcity-signups --local --file=migrations/0001_create_signups_table.sql`
-- [ ] **USER** - Run migration on production: `wrangler d1 execute fitcity-signups --file=migrations/0001_create_signups_table.sql`
+### Payment Scenarios (use Mollie test mode)
+- [ ] **Paid** - Complete payment successfully
+- [ ] **Cancelled** - Cancel at Mollie checkout, verify status updates
+- [ ] **Failed** - Select "Failed" in test bank
+- [ ] **Expired** - Let payment expire (or simulate)
 
-### 2.3 Backend Functions
-| File | Purpose |
-|------|---------|
-| `functions/api/start-signup-payment.js` | Create Mollie payment, store signup in D1, return checkout URL |
-| `functions/api/mollie-webhook.js` | Handle payment status updates, send confirmation email |
-| `functions/_lib/mollie.js` | Mollie API wrapper (createPayment, getPayment, createCustomer, createSubscription) |
-| `functions/_lib/email.js` | Resend email helper with HTML template |
-| `functions/_lib/validation.js` | Input validation (email, phone, date of birth, membership ID) |
-| `functions/_lib/db.js` | D1 database helpers (createSignup, updateSignup, getSignupById) |
+### Validation Testing
+- [ ] Submit without selecting membership
+- [ ] Submit with past date
+- [ ] Submit with invalid email
+- [ ] Submit with invalid phone number
+- [ ] Submit with invalid postal code
+- [ ] Submit without agreeing to terms
+- [ ] Test minimum age validation (must be 13+)
 
-### 2.4 Frontend Pages
-| File | Purpose |
-|------|---------|
-| `src/pages/Inschrijven.jsx` | Multi-step wizard form with 3 steps |
-| `src/pages/Bedankt.jsx` | Thank you page after payment redirect |
-
-**Multi-step form structure:**
-1. **Step 1 - Abonnement kiezen**: Grid of membership cards (reuse existing card styling)
-2. **Step 2 - Startdatum**: Date picker with minimum date = tomorrow
-3. **Step 3 - Gegevens**: Personal info form + terms checkbox + submit button
-
-**Available memberships for online signup (10 plans, recurring only):**
-- Exclude: `dagpas` (day pass), `quick-deal-3mnd` (one-time payment)
-- Include: All other monthly subscription plans
-
-### 2.5 Frontend Components (new)
-| File | Purpose |
-|------|---------|
-| `src/components/ui/Input.jsx` | Styled text input matching Button design |
-| `src/components/ui/Select.jsx` | Styled select dropdown |
-| `src/components/ui/Checkbox.jsx` | Styled checkbox with label |
-| `src/components/signup/StepIndicator.jsx` | Progress indicator (1 → 2 → 3) |
-| `src/components/signup/MembershipSelector.jsx` | Grid of selectable membership cards |
-| `src/components/signup/DateStep.jsx` | Start date selection with explanation |
-| `src/components/signup/PersonalInfoForm.jsx` | All personal info fields |
-
-### 2.6 Route Integration
-- [x] **CLAUDE** - Add `/inschrijven` and `/bedankt` routes to `src/App.jsx`
-- [x] **CLAUDE** - Update PlanCard "Kies dit plan" buttons:
-  - Recurring plans → link to `/inschrijven?plan={id}` (pre-selects the plan)
-  - Non-recurring plans (dagpas, quick-deal) → keep linking to `/contact`
-- [x] **CLAUDE** - Add `signupEligible: true/false` property to memberships data for clarity
+### Mobile Testing
+- [ ] Form layout on mobile
+- [ ] Date picker works on mobile
+- [ ] Membership cards scroll/wrap properly
 
 ---
 
-## Phase 3: Testing & Deployment
+## Environment Setup (Current - Development)
 
-### 3.1 Local Development
+### Accounts Used (Developer's accounts)
+| Service | Account | Purpose |
+|---------|---------|---------|
+| Mollie | Developer's test account | Payment processing |
+| Resend | Developer's account | Email sending via `notifications.summitlab.dev` |
+| Cloudflare | Developer's account | Hosting, D1 database, Pages |
+
+### Environment Variables (Preview)
+Set in Cloudflare Dashboard → Pages → fitcity → Settings:
+
+| Variable | Current Value | Notes |
+|----------|---------------|-------|
+| `MOLLIE_API_KEY` | `test_xxx...` | Test mode key |
+| `MOLLIE_WEBHOOK_TOKEN` | (secret) | Random string for webhook auth |
+| `RESEND_API_KEY` | `re_xxx...` | Developer's Resend key |
+| `EMAIL_FROM` | `FitCity Culemborg <noreply@notifications.summitlab.dev>` | From developer's domain |
+| `APP_BASE_URL` | `https://feature-inschrijven.fitcity-cbr.pages.dev` | Preview URL |
+| `ENABLE_SEPA` | `false` | Disabled for now |
+
+### D1 Database Binding
+Set in Cloudflare Dashboard → Pages → fitcity → Settings → Functions → D1 database bindings:
+- Variable name: `DB`
+- Database: `fitcity-signups`
+
+---
+
+## SEPA Automatic Subscriptions (Future)
+
+### Current Status
+`ENABLE_SEPA` is `false`. The current flow only handles the one-time €17 registration fee.
+
+### What SEPA Would Do
+When enabled, after successful €17 payment:
+1. Create a Mollie Customer
+2. Create a SEPA Direct Debit subscription
+3. Automatically charge the monthly fee starting from the chosen start date
+
+### Code Changes Needed for SEPA
+The current implementation has a bug: the customer is created AFTER the first payment, so the mandate (bank authorization) isn't linked.
+
+**To fix:**
+1. Modify `start-signup-payment.js` to create Mollie Customer FIRST
+2. Include `customerId` in the payment creation
+3. This links the mandate to the customer
+4. Then subscriptions will work
+
+**Files to modify:**
+- `functions/api/start-signup-payment.js` - Create customer before payment
+- `functions/api/mollie-webhook.js` - Already has subscription logic
+
+### Testing SEPA
+1. Set `ENABLE_SEPA=true` in environment variables
+2. Complete a signup with test iDEAL payment
+3. Check Mollie dashboard for:
+   - Customer created
+   - Subscription created with correct amount/interval
+   - First charge scheduled for start date
+
+---
+
+## Production Deployment Guide
+
+### Option A: Gym Owner Has Their Own Accounts
+
+If FitCity wants to use their own Mollie/Resend accounts:
+
+#### 1. Mollie Setup (Gym Owner)
+- [ ] Create Mollie account at https://mollie.com
+- [ ] Complete business verification (KYC)
+- [ ] Enable iDEAL payment method
+- [ ] Get **live** API key from Mollie Dashboard → Developers → API keys
+- [ ] (Optional) Enable SEPA Direct Debit for subscriptions
+
+#### 2. Resend Setup (Gym Owner)
+- [ ] Create Resend account at https://resend.com
+- [ ] Add domain (e.g., `fitcityculemborg.nl` or subdomain like `mail.fitcityculemborg.nl`)
+- [ ] Add DNS records to domain registrar:
+  - SPF record (TXT)
+  - DKIM records (3x CNAME or TXT)
+  - Domain verification (TXT)
+- [ ] Create API key
+
+#### 3. Cloudflare Setup (Gym Owner or Developer)
+If gym owner manages their own Cloudflare:
+- [ ] Create Cloudflare account
+- [ ] Add website to Cloudflare Pages
+- [ ] Create D1 database: `wrangler d1 create fitcity-signups`
+- [ ] Run migration: `wrangler d1 execute fitcity-signups --remote --file=migrations/0001_create_signups_table.sql`
+- [ ] Set up D1 binding in Pages settings
+- [ ] Set all environment variables
+
+#### 4. Environment Variables (Production)
+| Variable | Value |
+|----------|-------|
+| `MOLLIE_API_KEY` | `live_xxx...` (LIVE key, not test!) |
+| `MOLLIE_WEBHOOK_TOKEN` | New random string |
+| `RESEND_API_KEY` | Gym's Resend API key |
+| `EMAIL_FROM` | `FitCity Culemborg <noreply@fitcityculemborg.nl>` |
+| `APP_BASE_URL` | `https://fitcityculemborg.nl` |
+| `ENABLE_SEPA` | `false` (or `true` if ready) |
+
+### Option B: Developer Maintains Everything
+
+If you (developer) maintain the accounts:
+
+#### What You Manage
+- Mollie account (receive payouts to gym's bank account)
+- Resend account (email sending)
+- Cloudflare account (hosting, database)
+
+#### What Gym Owner Needs to Provide
+- Bank account details for Mollie payouts
+- Business details for Mollie KYC verification
+- Logo/branding for emails (optional)
+
+#### Ongoing Maintenance
+- Monitor Mollie for failed payments
+- Monitor Resend for bounced emails
+- Handle support requests about signups
+- Update membership prices when needed
+- Database backups (D1 has automatic backups)
+
+---
+
+## Local Development Notes
+
+### Running Locally
+Local development with full Functions support requires `wrangler pages dev`, but this can be tricky.
+
+**Recommended approach:** Use Cloudflare Preview deployments for testing. Each push to the branch creates a new preview URL with full functionality.
+
+### Why ngrok Is NOT Needed
+Originally planned for webhook testing, but **not needed** because:
+- Cloudflare Preview deployments have public URLs
+- Mollie webhooks work directly with preview URLs
+- No need for local tunnel
+
+### If You Must Run Locally
 ```bash
-# Create .dev.vars file with your secrets (copy from .dev.vars.example)
-# Then run:
-npm run dev              # Vite dev server (frontend only)
-wrangler pages dev       # Full stack with Functions + D1
+# Terminal 1: Run Vite
+npm run dev
+
+# Terminal 2: Run Wrangler (proxies to Vite + handles Functions)
+wrangler pages dev --proxy 5174
+
+# Visit http://localhost:8788
 ```
 
-### 3.2 Webhook Testing (requires public URL)
-- [ ] **USER** - Install ngrok: `npm install -g ngrok` or download from ngrok.com
-- [ ] **USER** - Start tunnel: `ngrok http 8788`
-- [ ] **USER** - Copy ngrok URL (e.g., `https://abc123.ngrok.io`)
-- [ ] **USER** - Set `APP_BASE_URL` in `.dev.vars` to ngrok URL
-- [ ] **USER** - Test full payment flow with Mollie test iDEAL
-
-### 3.3 Production Deployment
-- [ ] **USER** - Push branch, create PR
-- [ ] **USER** - Set all environment variables in Cloudflare Pages dashboard
-- [ ] **USER** - Merge to main (triggers deployment)
-- [ ] **USER** - Run D1 migration on production database
-- [ ] **USER** - Test full flow with real iDEAL payment (refundable if needed)
+For webhooks locally, you WOULD need ngrok:
+```bash
+ngrok http 8788
+# Update APP_BASE_URL in .dev.vars to ngrok URL
+```
 
 ---
 
-## Technical Details
+## File Reference
 
-### File Structure (to be created)
-```
-functions/
-├── api/
-│   ├── start-signup-payment.js
-│   └── mollie-webhook.js
-└── _lib/
-    ├── mollie.js
-    ├── email.js
-    ├── validation.js
-    └── db.js
+### Backend Functions
+| File | Purpose |
+|------|---------|
+| `functions/api/start-signup-payment.js` | Create Mollie payment, store signup, return checkout URL |
+| `functions/api/mollie-webhook.js` | Handle payment status, send email, (future: create subscription) |
+| `functions/_lib/db.js` | D1 database operations |
+| `functions/_lib/email.js` | Resend email with HTML template |
+| `functions/_lib/mollie.js` | Mollie API wrapper |
+| `functions/_lib/validation.js` | Input validation |
+| `functions/_lib/memberships.js` | Membership data for backend |
 
-migrations/
-└── 0001_create_signups_table.sql
+### Frontend
+| File | Purpose |
+|------|---------|
+| `src/pages/Inschrijven.jsx` | Multi-step signup form |
+| `src/pages/Bedankt.jsx` | Thank you page |
+| `src/components/signup/*` | Form step components |
+| `src/components/ui/Input.jsx` | Styled input |
+| `src/components/ui/Checkbox.jsx` | Styled checkbox |
 
-src/
-├── pages/
-│   ├── Inschrijven.jsx (new)
-│   └── Bedankt.jsx (new)
-├── components/
-│   ├── ui/
-│   │   ├── Input.jsx (new)
-│   │   ├── Select.jsx (new)
-│   │   └── Checkbox.jsx (new)
-│   └── signup/
-│       ├── StepIndicator.jsx (new)
-│       ├── MembershipSelector.jsx (new)
-│       ├── DateStep.jsx (new)
-│       └── PersonalInfoForm.jsx (new)
-└── data/
-    └── memberships.js (modify - add signupEligible flag)
+### Config
+| File | Purpose |
+|------|---------|
+| `wrangler.toml` | Cloudflare Pages + D1 config |
+| `migrations/0001_create_signups_table.sql` | Database schema |
 
-wrangler.toml (new)
-.dev.vars.example (new)
-```
+---
 
-### Database Schema
+## Database Schema
+
 ```sql
 CREATE TABLE signups (
   id TEXT PRIMARY KEY,
   created_at TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pending',
+  status TEXT NOT NULL DEFAULT 'pending',  -- pending, paid, cancelled, failed, expired
   membership_id TEXT NOT NULL,
   membership_name TEXT NOT NULL,
   membership_price TEXT NOT NULL,
@@ -200,47 +279,22 @@ CREATE TABLE signups (
   postal_code TEXT NOT NULL,
   city TEXT NOT NULL,
   mollie_payment_id TEXT,
-  mollie_customer_id TEXT,
-  mollie_subscription_id TEXT,
+  mollie_customer_id TEXT,       -- For SEPA subscriptions
+  mollie_subscription_id TEXT,   -- For SEPA subscriptions
   email_sent_at TEXT
 );
 ```
 
-### API Endpoints
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/start-signup-payment` | POST | Create Mollie payment, return checkout URL |
-| `/api/mollie-webhook` | POST | Handle Mollie payment status updates |
+### Viewing Database Records
+```bash
+# Query all signups
+wrangler d1 execute fitcity-signups --remote --command="SELECT * FROM signups"
 
-### Environment Variables Summary
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `MOLLIE_API_KEY` | Yes | Mollie API key (test_ or live_) |
-| `MOLLIE_WEBHOOK_TOKEN` | Yes | Secret token to validate webhook calls |
-| `RESEND_API_KEY` | Yes | Resend API key for emails |
-| `EMAIL_FROM` | Yes | Sender email address |
-| `APP_BASE_URL` | Yes | Base URL for redirects |
-| `ENABLE_SEPA` | No | Enable SEPA subscription creation (default: false) |
-
+# Query by status
+wrangler d1 execute fitcity-signups --remote --command="SELECT * FROM signups WHERE status='paid'"
+```
 ---
 
-## Current Progress
-
-**Status: Phase 2 Complete - Ready for Testing**
-
-- [x] Phase 1: External setup complete
-- [x] Phase 2: Code implementation complete
-- [ ] Phase 3: Testing & deployment
-
-**Next step for YOU:**
-```bash
-# 1. Create .dev.vars file from the template
-cp .dev.vars.example .dev.vars
-# Edit .dev.vars with your actual API keys
-
-# 2. Run the database migration locally
-wrangler d1 execute fitcity-signups --local --file=migrations/0001_create_signups_table.sql
-
-# 3. Start the dev server with Functions
-wrangler pages dev
-```
+Update 2025-12-25 20:43:09:
+- Added polling on /bedankt to refresh signup status (paid/failed/canceled/expired vs pending) with manual refresh and timestamp.
+- Local signup form persists in localStorage for 24h to ease retries and preselect membership/category.

@@ -23,6 +23,9 @@ const signupPlanGroups = planGroups
   }))
   .filter((group) => group.plans.length > 0);
 
+const FORM_STORAGE_KEY = 'fitcity-inschrijven-form';
+const FORM_STORAGE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
 const findCategoryForPlan = (planId) => {
   const plan = signupPlans.find((p) => p.id === planId);
   if (!plan) return null;
@@ -71,6 +74,44 @@ const Inschrijven = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+
+  // Prefill from localStorage (recent only)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = localStorage.getItem(FORM_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (!parsed?.savedAt || Date.now() - parsed.savedAt > FORM_STORAGE_TTL_MS) {
+        localStorage.removeItem(FORM_STORAGE_KEY);
+        return;
+      }
+      const storedData = { ...INITIAL_FORM_DATA, ...parsed.data };
+      setFormData(storedData);
+      if (!searchParams.get('plan') && storedData.membershipId) {
+        const category = findCategoryForPlan(storedData.membershipId);
+        if (category) {
+          setActiveCategory(category);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load saved signup data', error);
+    }
+  }, [searchParams]);
+
+  // Persist form data locally for retry flow
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(
+        FORM_STORAGE_KEY,
+        JSON.stringify({ savedAt: Date.now(), data: formData })
+      );
+    } catch (error) {
+      // Fail quietly if storage not available
+      console.error('Failed to save signup data', error);
+    }
+  }, [formData]);
 
   // Pre-select plan from URL parameter
   useEffect(() => {

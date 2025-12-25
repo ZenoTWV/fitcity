@@ -1,5 +1,5 @@
 import { useSearchParams, Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, Mail, Home, XCircle, Clock4 } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
@@ -10,27 +10,63 @@ const Bedankt = () => {
   const [searchParams] = useSearchParams();
   const signupId = searchParams.get('signup');
   const [status, setStatus] = useState('loading');
+  const [lastChecked, setLastChecked] = useState(null);
+  const pollTimerRef = useRef(null);
+  const POLL_INTERVAL_MS = 7000;
+  const POLL_TIMEOUT_MS = 90000;
+
+  const isTerminal = (value) =>
+    ['paid', 'subscription_created', 'failed', 'canceled', 'expired', 'missing'].includes(value);
+
+  const fetchStatus = async () => {
+    if (!signupId) {
+      setStatus('missing');
+      return 'missing';
+    }
+    try {
+      const res = await fetch(`/api/signup-status?id=${signupId}`);
+      if (!res.ok) {
+        setStatus('unknown');
+        return 'unknown';
+      }
+      const data = await res.json();
+      const normalized = (data.status || 'unknown').toString().toLowerCase();
+      setStatus(normalized);
+      setLastChecked(new Date());
+      return normalized;
+    } catch (err) {
+      console.error('Failed to fetch signup status', err);
+      setStatus('unknown');
+      return 'unknown';
+    }
+  };
 
   useEffect(() => {
-    const fetchStatus = async () => {
-      if (!signupId) {
-        setStatus('missing');
-        return;
-      }
-      try {
-        const res = await fetch(`/api/signup-status?id=${signupId}`);
-        if (!res.ok) {
-          setStatus('unknown');
-          return;
-        }
-        const data = await res.json();
-        setStatus(data.status || 'unknown');
-      } catch (err) {
-        console.error('Failed to fetch signup status', err);
-        setStatus('unknown');
+    let isActive = true;
+    const start = Date.now();
+
+    const runPoll = async () => {
+      const newStatus = await fetchStatus();
+      if (!isActive) return;
+      if (isTerminal(newStatus)) {
+        clearInterval(pollTimerRef.current);
       }
     };
-    fetchStatus();
+
+    runPoll();
+    pollTimerRef.current = setInterval(() => {
+      const elapsed = Date.now() - start;
+      if (elapsed > POLL_TIMEOUT_MS) {
+        clearInterval(pollTimerRef.current);
+        return;
+      }
+      runPoll();
+    }, POLL_INTERVAL_MS);
+
+    return () => {
+      isActive = false;
+      if (pollTimerRef.current) clearInterval(pollTimerRef.current);
+    };
   }, [signupId]);
 
   const isPaid = status === 'paid' || status === 'subscription_created';
@@ -83,6 +119,13 @@ const Bedankt = () => {
                   : 'We zijn je betaling aan het controleren. Dit duurt meestal enkele seconden.'}
             </p>
 
+            {isPending && (
+              <p className="mt-2 text-sm text-white/50">
+                Status wordt elke paar seconden ververst
+                {lastChecked ? ` (laatste update: ${lastChecked.toLocaleTimeString()})` : ''}.
+              </p>
+            )}
+
             {/* Email notice */}
             {(isPaid || isPending) && (
               <div className="mx-auto mt-8 flex max-w-sm items-start gap-4 rounded-xl bg-fitcity/10 p-4 text-left">
@@ -131,6 +174,15 @@ const Bedankt = () => {
               {isFailed && (
                 <Button as={Link} to="/inschrijven" className="w-full justify-center">
                   Probeer opnieuw
+                </Button>
+              )}
+              {isPending && (
+                <Button
+                  variant="ghost"
+                  className="w-full justify-center sm:w-auto"
+                  onClick={fetchStatus}
+                >
+                  Ververs status
                 </Button>
               )}
               <Button as={Link} to="/" icon={Home} iconPosition="left" variant="ghost" className="w-full justify-center sm:w-auto">
