@@ -5,7 +5,6 @@ import { Clock, Play } from 'lucide-react';
 import Container from './Container';
 import Button from './ui/Button';
 import { heroMedia, heroStats, openingHours, holidayHours } from '../data/facilityInfo';
-import { primaryCta } from '../data/ctaConfig';
 import VideoDialog from './VideoDialog';
 
 const Hero = () => {
@@ -122,14 +121,6 @@ const Hero = () => {
                   ))}
                 </div>
               </div>
-              <Button
-                as={Link}
-                to={primaryCta.href}
-                className="mt-6 w-full justify-center"
-                data-tracking-id={primaryCta.trackingId}
-              >
-                {primaryCta.label}
-              </Button>
             </div>
           </motion.div>
         </Container>
