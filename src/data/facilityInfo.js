@@ -7,6 +7,7 @@ const openingHours = [
 const openingHoursInline = openingHours.map(({ day, time }) => `${day} ${time}`).join(' | ');
 
 const holidayHours = [
+  { day: '24 dec', status: '08:30 - 17:00' },
   { day: '25 dec', status: '09:00 - 14:00' },
   { day: '26 dec', status: '09:00 - 14:00' },
   { day: '31 dec', status: '09:00 - 15:00' },
