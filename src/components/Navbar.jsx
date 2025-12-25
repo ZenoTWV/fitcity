@@ -106,7 +106,13 @@ const Navbar = () => {
                       {item.label}
                     </NavItem>
                   ))}
-                  <Button as={NavLink} to="/inschrijven" className="w-full" size="lg">
+                  <Button
+                    as={NavLink}
+                    to="/inschrijven"
+                    className="w-full"
+                    size="lg"
+                    onClick={() => setIsOpen(false)}
+                  >
                     Inschrijven
                   </Button>
                   <div className="text-xs uppercase tracking-[0.35em] text-white/40">

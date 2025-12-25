@@ -26,7 +26,7 @@ const Input = ({
         id={inputId}
         type={type}
         className={clsx(
-          'w-full rounded-xl border bg-white/5 px-4 py-3 text-white placeholder:text-white/40',
+          'w-full min-w-0 appearance-none rounded-xl border bg-white/5 px-4 py-3 text-white placeholder:text-white/40',
           'transition-all duration-200',
           'focus:outline-none focus:ring-2 focus:ring-fitcity/60',
           error
