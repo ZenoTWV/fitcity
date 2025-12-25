@@ -67,7 +67,7 @@ const Home = () => {
       >
         <div className="space-y-6">
           <p className="text-white/70">
-            Fitness, ladies only zone en (kick)boksen onder 1 dak. Onze crew helpt je graag verder op de vloer.
+            Fitness, ladies only zone en kickboksen onder 1 dak. Onze crew helpt je graag verder op de vloer.
           </p>
           <ul className="space-y-4 text-white/70">
             {[
