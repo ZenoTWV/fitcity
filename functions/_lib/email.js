@@ -77,8 +77,8 @@ function generateConfirmationEmailHtml(signup) {
         </table>
       </div>
 
-      <div style="background:rgba(255,229,0,0.12);border:1px solid #ffe500;border-radius:12px;padding:12px;margin:0 0 14px 0;">
-        <p style="margin:0;font-size:14px;color:#0b0b0f;background:#ffe500;padding:10px;border-radius:10px;"><strong>Let op:</strong> Vanaf je startdatum worden de abonnementskosten maandelijks automatisch geïncasseerd via SEPA automatische incasso.</p>
+      <div style="background:rgba(255,229,0,0.12);border-radius:12px;padding:12px;margin:0 0 14px 0;">
+        <p style="margin:0;font-size:14px;color:#ffe500;"><strong>Let op:</strong> Vanaf je startdatum worden de abonnementskosten maandelijks automatisch geïncasseerd via SEPA automatische incasso.</p>
       </div>
 
       <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin:0 0 14px 0;">
