@@ -39,7 +39,7 @@ const socialStats = [
 ];
 
 const kickboxingCards = [
-  { image: '/kickboksen-hero.webp', title: 'Kickboksen', description: 'Techniek, conditie en sparren in kleine groepen.', to: '/kickboksen' },
+  { image: '/kickboksen-home-card.webp', title: 'Kickboksen', description: 'Techniek, conditie en sparren in kleine groepen.', to: '/kickboksen' },
   { image: '/kickboksen-kids.webp', title: 'Kinderkickboksen', description: 'Speelse lessen met focus op zelfvertrouwen.', to: '/kickboksen' },
 ];
 
