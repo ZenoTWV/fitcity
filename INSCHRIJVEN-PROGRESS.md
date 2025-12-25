@@ -307,3 +307,8 @@ Update 2025-12-25 21:07:47:
 - Timeout on /bedankt now redirects to contact after 3s with prefilled signup info and alert banner on contact page.
 Update 2025-12-25 21:23:14:
 - Removed auto-redirect on payment timeout; user now stays on status page with retry/contact options.
+Update 2025-12-25 22:04:02:
+- Adjusted contact page scrolling (hash/prefill only) and added scroll margin on contact form anchor.
+- Prevented date/time overflow and normalized heights on contact form inputs.
+- Restyled confirmation email with FitCity colors, softer 'Let op', removed blocked logo image, and kept next steps/CTA.
+- Tweaked Summit Labs footer credit position and bold text.

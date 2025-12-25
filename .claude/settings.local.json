@@ -6,7 +6,12 @@
       "Bash(curl:*)",
       "Bash(ls:*)",
       "Bash(git log:*)",
-      "Bash(file:*)"
+      "Bash(file:*)",
+      "Bash(git checkout:*)",
+      "Bash(cat:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
