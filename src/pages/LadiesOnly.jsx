@@ -39,7 +39,7 @@ const LadiesOnly = () => {
           sizes="100vw"
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/60 to-black/85" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/55 to-black/80" aria-hidden="true" />
         <Container className="relative z-10 py-16 md:py-24">
           <div className="max-w-4xl">
             <div className="space-y-6 rounded-4xl border border-white/10 bg-black/60 p-6 text-white/85 backdrop-blur-md sm:p-8">

@@ -37,7 +37,7 @@ const Kickboksen = () => {
           sizes="100vw"
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/35" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/55 to-black/25" aria-hidden="true" />
         <Container className="relative z-10 py-16 md:py-24">
           <div className="max-w-4xl">
             <div className="rounded-3xl border border-white/10 bg-black/55 p-6 backdrop-blur-sm sm:p-8 space-y-6 text-white/85">
