@@ -97,7 +97,12 @@ const Contact = () => {
         }}
       />
 
-      <Section id="contact-form" contentClassName="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.1fr_0.9fr]" disableReveal>
+      <Section
+        id="contact-form"
+        className="scroll-mt-28"
+        contentClassName="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.1fr_0.9fr]"
+        disableReveal
+      >
         <div className="space-y-6">
           {contactDetails.map(({ icon: Icon, title, content, href }) => (
             <div key={title} className="flex gap-4 rounded-3xl border border-white/10 bg-white/[0.02] p-5">
