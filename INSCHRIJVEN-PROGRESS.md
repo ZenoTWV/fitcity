@@ -298,3 +298,6 @@ wrangler d1 execute fitcity-signups --remote --command="SELECT * FROM signups WH
 Update 2025-12-25 20:43:09:
 - Added polling on /bedankt to refresh signup status (paid/failed/canceled/expired vs pending) with manual refresh and timestamp.
 - Local signup form persists in localStorage for 24h to ease retries and preselect membership/category.
+Update 2025-12-25 20:54:49:
+- Added timeout handling on /bedankt with contact+retry CTA and prefilled contact link using stored signup info and signup ID.
+- Contact form now accepts prefilled name/email/phone/message via query params (used by thank-you fallback).

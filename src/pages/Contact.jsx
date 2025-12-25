@@ -15,6 +15,7 @@ const quickActions = [
 const Contact = () => {
   const [reason, setReason] = useState('contact');
   const [submitState, setSubmitState] = useState('idle');
+  const [prefill, setPrefill] = useState({ name: '', email: '', phone: '', message: '' });
   const formRef = useRef(null);
   const location = useLocation();
   const contactEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT;
@@ -58,9 +59,22 @@ const Contact = () => {
   };
 
   useEffect(() => {
-    if (location.hash === '#proefles') {
+    const params = new URLSearchParams(location.search);
+    const searchReason = params.get('reason');
+    const messageParam = params.get('message');
+    setPrefill({
+      name: params.get('name') || '',
+      email: params.get('email') || '',
+      phone: params.get('phone') || '',
+      message: messageParam || '',
+    });
+
+    if (searchReason) {
+      setReason(searchReason);
+    } else if (location.hash === '#proefles') {
       setReason('proefles');
     }
+
     if (location.hash) {
       const targetId = location.hash.replace('#', '');
       const targetElement = document.getElementById(targetId);
@@ -72,7 +86,7 @@ const Contact = () => {
         formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
-  }, [location.hash]);
+  }, [location.hash, location.search]);
 
   return (
     <>
@@ -151,6 +165,8 @@ const Contact = () => {
               name="name"
               placeholder="Je naam"
               required
+              value={prefill.name}
+              onChange={(e) => setPrefill((prev) => ({ ...prev, name: e.target.value }))}
               onInvalid={(event) => setDutchValidity(event, 'Vul dit veld alstublieft in.')}
               onInput={clearValidity}
               className="mt-2 w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/40 focus:border-fitcity focus:outline-none"
@@ -166,6 +182,8 @@ const Contact = () => {
               name="email"
               placeholder="Je e-mailadres"
               required
+              value={prefill.email}
+              onChange={(e) => setPrefill((prev) => ({ ...prev, email: e.target.value }))}
               onInvalid={(event) => setDutchValidity(event, 'Vul dit veld alstublieft in.')}
               onInput={clearValidity}
               className="mt-2 w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/40 focus:border-fitcity focus:outline-none"
@@ -181,6 +199,8 @@ const Contact = () => {
               name="phone"
               placeholder="Bijv. 06 12345678"
               required
+              value={prefill.phone}
+              onChange={(e) => setPrefill((prev) => ({ ...prev, phone: e.target.value }))}
               onInvalid={(event) => setDutchValidity(event, 'Vul dit veld alstublieft in.')}
               onInput={clearValidity}
               className="mt-2 w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/40 focus:border-fitcity focus:outline-none"
@@ -250,6 +270,8 @@ const Contact = () => {
                   name="message"
                   rows="4"
                   placeholder="Bijv. voorkeur voor trainer, blessures of aanvullende vragen"
+                  value={prefill.message}
+                  onChange={(e) => setPrefill((prev) => ({ ...prev, message: e.target.value }))}
                   className="mt-2 w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/40 focus:border-fitcity focus:outline-none"
                 />
               </div>
@@ -267,6 +289,8 @@ const Contact = () => {
                 rows="4"
                 placeholder="Vertel ons waar we mee kunnen helpen"
                 required
+                value={prefill.message}
+                onChange={(e) => setPrefill((prev) => ({ ...prev, message: e.target.value }))}
                 onInvalid={(event) => setDutchValidity(event, 'Vul dit veld alstublieft in.')}
                 onInput={clearValidity}
                 className="mt-2 w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/40 focus:border-fitcity focus:outline-none"

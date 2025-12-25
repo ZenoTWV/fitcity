@@ -12,11 +12,30 @@ const Bedankt = () => {
   const [status, setStatus] = useState('loading');
   const [lastChecked, setLastChecked] = useState(null);
   const pollTimerRef = useRef(null);
+  const [contactHref, setContactHref] = useState('/contact');
   const POLL_INTERVAL_MS = 7000;
   const POLL_TIMEOUT_MS = 90000;
+  const FORM_STORAGE_KEY = 'fitcity-inschrijven-form';
+  const FORM_STORAGE_TTL_MS = 24 * 60 * 60 * 1000;
 
   const isTerminal = (value) =>
-    ['paid', 'subscription_created', 'failed', 'canceled', 'expired', 'missing'].includes(value);
+    ['paid', 'subscription_created', 'failed', 'canceled', 'expired', 'missing', 'timeout'].includes(value);
+
+  const getStoredForm = () => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const raw = localStorage.getItem(FORM_STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed?.savedAt || Date.now() - parsed.savedAt > FORM_STORAGE_TTL_MS) {
+        return null;
+      }
+      return parsed.data || null;
+    } catch (err) {
+      console.error('Failed to read stored form', err);
+      return null;
+    }
+  };
 
   const fetchStatus = async () => {
     if (!signupId) {
@@ -50,6 +69,12 @@ const Bedankt = () => {
       if (!isActive) return;
       if (isTerminal(newStatus)) {
         clearInterval(pollTimerRef.current);
+        return;
+      }
+      const elapsed = Date.now() - start;
+      if (elapsed > POLL_TIMEOUT_MS) {
+        setStatus('timeout');
+        clearInterval(pollTimerRef.current);
       }
     };
 
@@ -70,8 +95,31 @@ const Bedankt = () => {
   }, [signupId]);
 
   const isPaid = status === 'paid' || status === 'subscription_created';
-  const isFailed = status === 'failed' || status === 'canceled' || status === 'expired' || status === 'missing';
+  const isFailed = status === 'failed' || status === 'canceled' || status === 'expired' || status === 'missing' || status === 'timeout';
   const isPending = status === 'pending' || status === 'open' || status === 'loading' || status === 'unknown';
+
+  useEffect(() => {
+    const stored = getStoredForm();
+    const params = new URLSearchParams();
+    params.set('reason', 'contact');
+    if (stored?.firstName || stored?.lastName) {
+      params.set(
+        'name',
+        `${stored.firstName || ''} ${stored.lastName || ''}`.trim()
+      );
+    }
+    if (stored?.email) params.set('email', stored.email);
+    if (stored?.phone) params.set('phone', stored.phone);
+
+    let message = 'Mijn betaling kon niet worden verwerkt.';
+    if (signupId) message += ` Signup ID: ${signupId}.`;
+    if (stored?.membershipId) message += ` Abonnement: ${stored.membershipId}.`;
+    if (stored?.startDate) message += ` Startdatum: ${stored.startDate}.`;
+    message += ' Kunnen jullie helpen?';
+    params.set('message', message);
+
+    setContactHref(`/contact?${params.toString()}`);
+  }, [signupId, status]);
 
   return (
     <AnimatedPage>
@@ -123,6 +171,11 @@ const Bedankt = () => {
               <p className="mt-2 text-sm text-white/50">
                 Status wordt elke paar seconden ververst
                 {lastChecked ? ` (laatste update: ${lastChecked.toLocaleTimeString()})` : ''}.
+              </p>
+            )}
+            {status === 'timeout' && (
+              <p className="mt-2 text-sm text-white/50">
+                We kunnen de betaling niet bevestigen. Probeer opnieuw of neem contact op.
               </p>
             )}
 
@@ -183,6 +236,16 @@ const Bedankt = () => {
                   onClick={fetchStatus}
                 >
                   Ververs status
+                </Button>
+              )}
+              {isFailed && (
+                <Button
+                  as={Link}
+                  to={contactHref}
+                  variant="ghost"
+                  className="w-full justify-center sm:w-auto"
+                >
+                  Neem contact op
                 </Button>
               )}
               <Button as={Link} to="/" icon={Home} iconPosition="left" variant="ghost" className="w-full justify-center sm:w-auto">
