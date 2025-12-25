@@ -128,8 +128,13 @@ const Footer = () => {
             <Link to="/voorwaarden" className="hover:text-fitcity">Voorwaarden</Link>
             <Link to="/cookiebeleid" className="hover:text-fitcity">Cookiebeleid</Link>
           </div>
-          <p className="text-center md:text-right">Gemaakt met 💪 door <a href="https://summitlab.dev" className="hover:text-fitcity" target="_blank" rel="noreferrer">Summit Labs</a></p>
         </div>
+        <p className="pt-4 text-center text-xs text-white/50 md:text-right">
+          Gemaakt met 💪 door{' '}
+          <a href="https://summitlab.dev" className="font-semibold hover:text-fitcity" target="_blank" rel="noreferrer">
+            Summit Labs
+          </a>
+        </p>
       </Container>
     </footer>
   );
