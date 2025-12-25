@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { Clock, Play } from 'lucide-react';
 import Container from './Container';
@@ -15,6 +16,10 @@ const Hero = () => {
   const hasWebp = Boolean(backgroundWebp);
   const hasJpg = Boolean(backgroundJpg);
   const fallbackImage = hasWebp ? backgroundWebp : backgroundJpg;
+  const todayKey = new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'short' })
+    .format(new Date())
+    .toLowerCase()
+    .replace('.', '');
 
   return (
     <>
@@ -126,9 +131,17 @@ const Hero = () => {
                 <p className="uppercase tracking-[0.3em] text-white/50">Speciale openingstijden</p>
                 <div className="mt-2 space-y-1">
                   {holidayHours.map((item) => (
-                    <div key={item.day} className="flex justify-between">
-                      <span>{item.day}</span>
-                      <span>{item.status}</span>
+                    <div
+                      key={item.day}
+                      className={clsx(
+                        'flex items-center justify-between rounded-2xl border px-3 py-2',
+                        item.day.toLowerCase() === todayKey
+                          ? 'border-fitcity/70 bg-fitcity/10 text-fitcity'
+                          : 'border-white/5 bg-white/[0.03] text-white'
+                      )}
+                    >
+                      <span className="font-semibold">{item.day}</span>
+                      <span className="text-white/80">{item.status}</span>
                     </div>
                   ))}
                 </div>
