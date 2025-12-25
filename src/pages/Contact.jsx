@@ -250,7 +250,7 @@ const Contact = () => {
                     type="date"
                     id="preferred-date"
                     name="preferred-date"
-                    className="mt-2 w-full min-w-0 appearance-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white focus:border-fitcity focus:outline-none"
+                    className="mt-2 h-12 w-full min-w-0 appearance-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 text-white focus:border-fitcity focus:outline-none"
                   />
                 </div>
                 <div>
@@ -261,7 +261,7 @@ const Contact = () => {
                     type="time"
                     id="preferred-time"
                     name="preferred-time"
-                    className="mt-2 w-full min-w-0 appearance-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white focus:border-fitcity focus:outline-none"
+                    className="mt-2 h-12 w-full min-w-0 appearance-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 text-white focus:border-fitcity focus:outline-none"
                   />
                 </div>
               </div>
