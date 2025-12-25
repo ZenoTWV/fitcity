@@ -145,7 +145,7 @@ const Home = () => {
         header={{
           eyebrow: 'Kickboksen',
           title: 'Kickboksen voor kids en volwassenen',
-          subtitle: 'Rooster, prijzen en proeflesinfo in één overzicht.',
+          subtitle: 'Lestijden, tarieven en hoe je kunt instromen voor een proefles staan hier overzichtelijk bij elkaar.',
         }}
         contentClassName="grid gap-8 lg:grid-cols-2"
       >
