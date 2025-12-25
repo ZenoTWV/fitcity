@@ -1,4 +1,4 @@
-// Resend email helper for sending confirmation emails
+﻿// Resend email helper for sending confirmation emails
 
 const RESEND_API_BASE = 'https://api.resend.com';
 
@@ -41,13 +41,13 @@ function generateConfirmationEmailHtml(signup) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bevestiging inschrijving</title>
 </head>
-<body style="margin:0;padding:0;background:#0b0b0f;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:#e5e7eb;">
+<body bgcolor="#0b0b0f" style="margin:0;padding:0;background:#0b0b0f;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:#e5e7eb;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0b0b0f">
     <tr>
-      <td align="center" style="padding:20px 12px;">
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#0f1117" style="width:100%; max-width:600px; border-radius:18px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.25);">
+      <td align="center" bgcolor="#0b0b0f" style="padding:20px 12px;background:#0b0b0f;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#0f1117" style="width:100%; max-width:600px; border-radius:18px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.25); background:#0f1117;">
           <tr>
-            <td style="padding:24px 18px;">
+            <td bgcolor="#0f1117" style="padding:24px 18px; background:#0f1117;">
 
               <div style="text-align:center; margin-bottom:18px;">
                 <h1 style="color:#ffe500; font-size:22px; margin:0 0 6px 0;">Welkom bij FitCity!</h1>
