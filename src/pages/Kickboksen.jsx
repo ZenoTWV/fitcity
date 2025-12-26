@@ -4,6 +4,7 @@ import PlanCard from '../components/PlanCard';
 import Button from '../components/ui/Button';
 import CtaStrip from '../components/CtaStrip';
 import Container from '../components/Container';
+import Carousel from '../components/Carousel';
 import { kickboxingPlans } from '../data/memberships';
 import { kickboxingFeatures, kickboxingSchedule, beginnerInfo } from '../data/kickboxingInfo';
 import { getPrimaryCta } from '../data/ctaConfig';
@@ -19,6 +20,15 @@ const kidsHighlights = [
   'Respect en discipline op een speelse manier',
   'Samenwerken en zelfvertrouwen opbouwen',
   'Beweging, balans en basisvaardigheden',
+];
+
+const kickboxingGalleryImages = [
+  { src: '/kickboxen-pictures/kickboxen-1.jpeg', alt: 'Kickbokstraining bij FitCity' },
+  { src: '/kickboxen-pictures/kickboxen-2.jpeg', alt: 'Groepstraining kickboksen' },
+  { src: '/kickboxen-pictures/kickboxen-3.jpeg', alt: 'Techniektraining met pads' },
+  { src: '/kickboxen-pictures/kickboxen-4.jpeg', alt: 'Kickboksles voor kids en volwassenen' },
+  { src: '/kickboxen-pictures/kickboxen-5.jpeg', alt: 'Sparren onder begeleiding' },
+  { src: '/kickboxen-pictures/kickboxen-6.jpeg', alt: 'Conditietraining kickboksen' },
 ];
 
 const Kickboksen = () => {
@@ -99,11 +109,20 @@ const Kickboksen = () => {
       </Section>
 
       <Section
+        tone="contrast"
+        header={{
+          eyebrow: 'In actie',
+          title: 'Onze kickboksers aan het werk',
+        }}
+      >
+        <Carousel images={kickboxingGalleryImages} />
+      </Section>
+
+      <Section
         header={{
           eyebrow: 'Rooster',
           title: 'Lessen voor kids en volwassenen',
           subtitle: 'Meerdere momenten per week, makkelijk te combineren.',
-          align: 'left',
         }}
         contentClassName="grid gap-6 md:grid-cols-3"
       >
