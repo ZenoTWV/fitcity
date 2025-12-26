@@ -60,6 +60,7 @@ const INITIAL_FORM_DATA = {
   houseNumberAddition: '',
   postalCode: '',
   city: '',
+  iban: '',
   agreeTerms: false,
 };
 
@@ -189,6 +190,11 @@ const Inschrijven = () => {
         newErrors.postalCode = 'Ongeldige postcode';
       }
       if (!formData.city?.trim()) newErrors.city = 'Verplicht';
+      if (!formData.iban?.trim()) {
+        newErrors.iban = 'Verplicht';
+      } else if (!/^NL[0-9]{2}[A-Z]{4}[0-9]{10}$/i.test(formData.iban.replace(/\s/g, ''))) {
+        newErrors.iban = 'Ongeldig IBAN (NL formaat)';
+      }
       if (!formData.agreeTerms) newErrors.agreeTerms = 'Je moet akkoord gaan';
     }
 
@@ -215,7 +221,7 @@ const Inschrijven = () => {
     setSubmitError('');
 
     try {
-      const response = await fetch('/api/start-signup-payment', {
+      const response = await fetch('/api/submit-signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -227,8 +233,11 @@ const Inschrijven = () => {
         throw new Error(data.error || 'Er is een fout opgetreden');
       }
 
-      // Redirect to Mollie checkout
-      window.location.href = data.checkoutUrl;
+      // Clear localStorage on success
+      localStorage.removeItem(FORM_STORAGE_KEY);
+
+      // Redirect to thank you page
+      window.location.href = `/bedankt?signup=${data.signupId}`;
     } catch (error) {
       console.error('Submit error:', error);
       setSubmitError(error.message);
@@ -372,7 +381,7 @@ const Inschrijven = () => {
                       Bezig...
                     </>
                   ) : (
-                    `Betaal €17,00`
+                    'Schrijf je in'
                   )}
                 </Button>
               )}
@@ -394,9 +403,12 @@ const Inschrijven = () => {
               </div>
               <div className="mt-4 border-t border-white/10 pt-4">
                 <div className="flex items-baseline justify-between text-sm">
-                  <span className="text-white/60">Inschrijfkosten (eenmalig)</span>
-                  <span className="font-semibold">€17,00</span>
+                  <span className="text-white/60">Inschrijfkosten</span>
+                  <span className="font-semibold">€17,00 (ter plekke)</span>
                 </div>
+                <p className="mt-2 text-xs text-white/50">
+                  De inschrijfkosten betaal je bij het ophalen van je ledenpas.
+                </p>
               </div>
             </div>
           )}

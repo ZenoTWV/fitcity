@@ -13,6 +13,7 @@ import Voorwaarden from './pages/Voorwaarden';
 import Cookiebeleid from './pages/Cookiebeleid';
 import Inschrijven from './pages/Inschrijven';
 import Bedankt from './pages/Bedankt';
+import Admin from './pages/Admin';
 import AnimatedPage from './components/AnimatedPage';
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/cookiebeleid" element={<AnimatedPage><Cookiebeleid /></AnimatedPage>} />
             <Route path="/inschrijven" element={<Inschrijven />} />
             <Route path="/bedankt" element={<Bedankt />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </AnimatePresence>
       </main>

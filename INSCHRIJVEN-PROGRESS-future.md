@@ -1,4 +1,49 @@
-# FitCity Inschrijven Feature - Implementation Plan
+# FitCity Inschrijven Feature - Implementation Progress
+
+## Current Status: Simplified No-Payment Flow (Live)
+
+The signup form is currently running **without online payments**. Users fill out the form (including IBAN), and must visit FitCity in person to:
+- Pay €17 registration fee (pin/cash)
+- Show ID
+- Pick up membership card
+
+### What's Working Now
+- [x] 3-step signup form (membership → start date → personal info + IBAN)
+- [x] IBAN collection with validation (Dutch format)
+- [x] IBAN encrypted in database (AES-256-GCM)
+- [x] Signup stored in D1 database with status `pending_pickup`
+- [x] Thank you page with next steps
+- [x] Pre-selected plan via URL (`/inschrijven?plan=smart-deal`)
+
+### What's Disabled (for future)
+- [ ] Mollie iDEAL payment integration
+- [ ] Confirmation emails via Resend
+- [ ] SEPA subscription auto-creation
+
+---
+
+## Future: Re-Enable Online Payments
+
+The payment integration code is preserved and can be re-enabled. Here's what to do:
+
+### Option 1: Simple Toggle (Recommended)
+
+1. Change the frontend to call `/api/start-signup-payment` instead of `/api/submit-signup`
+2. The existing Mollie integration will handle payments
+3. Webhook will process payment confirmations
+4. Emails will be sent automatically
+
+**Files to modify:**
+- `src/pages/Inschrijven.jsx` - Change API endpoint back to `/api/start-signup-payment`
+- `src/pages/Bedankt.jsx` - Restore payment status polling
+
+### Option 2: Environment Variable Toggle
+
+Add `ENABLE_ONLINE_PAYMENT=true` to Cloudflare environment and modify frontend to check this flag.
+
+---
+
+# FUTURE PAYMENT IMPLEMENTATION (Reference)
 
 ## Overview
 Build a checkout-style `/inschrijven` page with Mollie iDEAL payment integration for €17 registration fee, Cloudflare Pages Functions backend, D1 database, and Resend email confirmation.
@@ -7,20 +52,16 @@ Build a checkout-style `/inschrijven` page with Mollie iDEAL payment integration
 
 ---
 
-## Current Status
-
-**Phase: Testing on Preview Environment**
+## Payment Flow Status (When Re-Enabled)
 
 | Milestone | Status |
 |-----------|--------|
 | Phase 1: External setup | Done |
 | Phase 2: Code implementation | Done |
-| Phase 3: Preview testing | In Progress |
+| Phase 3: Preview testing | Needs re-testing |
 | Phase 4: Production deployment | Not started |
 
-**Preview URL:** https://feature-inschrijven.fitcity-cbr.pages.dev
-
-### What's Working
+### What Was Working (needs re-testing)
 - [x] Signup form with 3-step wizard
 - [x] Form validation
 - [x] Mollie iDEAL payment (test mode)
@@ -29,7 +70,7 @@ Build a checkout-style `/inschrijven` page with Mollie iDEAL payment integration
 - [x] Confirmation email sent via Resend
 - [x] Redirect to /bedankt page
 
-### Still To Test
+### To Test When Re-Enabling
 - [ ] All 10 membership plans work correctly
 - [ ] Edge cases (invalid data, payment cancelled, payment failed)
 - [ ] Mobile responsiveness

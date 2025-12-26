@@ -78,6 +78,15 @@ export function validateSignupInput(data) {
     errors.push('Je moet akkoord gaan met de voorwaarden');
   }
 
+  // IBAN validation (required for no-payment flow)
+  if (data.iban !== undefined) {
+    if (!data.iban) {
+      errors.push('IBAN is verplicht');
+    } else if (!isValidIBAN(data.iban)) {
+      errors.push('Ongeldig IBAN (formaat: NL91ABNA0417164300)');
+    }
+  }
+
   return {
     valid: errors.length === 0,
     errors,
@@ -103,6 +112,14 @@ function isValidPostalCode(postalCode) {
   const cleaned = postalCode.replace(/\s/g, '').toUpperCase();
   const postalRegex = /^[1-9][0-9]{3}[A-Z]{2}$/;
   return postalRegex.test(cleaned);
+}
+
+function isValidIBAN(iban) {
+  // Dutch IBAN format: NL + 2 check digits + 4 letter bank code + 10 digit account
+  // Example: NL91ABNA0417164300 (18 characters total)
+  const cleaned = iban.replace(/\s/g, '').toUpperCase();
+  const ibanRegex = /^NL[0-9]{2}[A-Z]{4}[0-9]{10}$/;
+  return ibanRegex.test(cleaned);
 }
 
 function isValidFutureDate(dateString) {
@@ -138,4 +155,9 @@ export function normalizePhone(phone) {
     cleaned = '0' + cleaned.slice(4);
   }
   return cleaned;
+}
+
+export function normalizeIBAN(iban) {
+  // Normalize to uppercase without spaces
+  return iban.replace(/\s/g, '').toUpperCase();
 }

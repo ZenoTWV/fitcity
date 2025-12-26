@@ -6,8 +6,8 @@ export async function createSignup(db, signup) {
       id, created_at, status, membership_id, membership_name, membership_price,
       membership_term, start_date, first_name, last_name, email, phone,
       date_of_birth, street, house_number, house_number_addition,
-      postal_code, city
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      postal_code, city, iban_encrypted
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   await stmt.bind(
@@ -28,7 +28,8 @@ export async function createSignup(db, signup) {
     signup.houseNumber,
     signup.houseNumberAddition || null,
     signup.postalCode,
-    signup.city
+    signup.city,
+    signup.ibanEncrypted || null
   ).run();
 
   return signup;
@@ -91,9 +92,23 @@ function mapDbRowToSignup(row) {
     houseNumberAddition: row.house_number_addition,
     postalCode: row.postal_code,
     city: row.city,
+    ibanEncrypted: row.iban_encrypted,
     molliePaymentId: row.mollie_payment_id,
     mollieCustomerId: row.mollie_customer_id,
     mollieSubscriptionId: row.mollie_subscription_id,
     emailSentAt: row.email_sent_at,
+    paidInPerson: row.paid_in_person === 1,
+    adminNotes: row.admin_notes,
   };
+}
+
+export async function getAllSignupsByStatus(db, status) {
+  const stmt = db.prepare('SELECT * FROM signups WHERE status = ? ORDER BY created_at DESC');
+  const result = await stmt.bind(status).all();
+  return result.results ? result.results.map(mapDbRowToSignup) : [];
+}
+
+export async function updateSignupAdminFields(db, id, paidInPerson, adminNotes) {
+  const stmt = db.prepare('UPDATE signups SET paid_in_person = ?, admin_notes = ? WHERE id = ?');
+  await stmt.bind(paidInPerson ? 1 : 0, adminNotes || null, id).run();
 }

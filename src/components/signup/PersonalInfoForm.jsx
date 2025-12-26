@@ -136,6 +136,25 @@ const PersonalInfoForm = ({ data, errors, onChange }) => {
         </div>
       </div>
 
+      {/* Bank account for SEPA */}
+      <div className="space-y-4">
+        <p className="text-sm font-medium text-white/80">Bankgegevens</p>
+        <Input
+          name="iban"
+          label="IBAN"
+          value={data.iban}
+          onChange={handleChange('iban')}
+          error={errors.iban}
+          required
+          autoComplete="off"
+          placeholder="NL91ABNA0417164300"
+        />
+        <p className="text-xs text-white/50">
+          Je IBAN wordt gebruikt voor de automatische incasso van je lidmaatschap.
+          Dit wordt veilig en versleuteld opgeslagen.
+        </p>
+      </div>
+
       {/* Terms checkbox */}
       <div className="rounded-xl bg-white/5 p-4">
         <Checkbox
