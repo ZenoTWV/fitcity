@@ -216,6 +216,9 @@ const Admin = () => {
                           <td className="px-4 py-3">
                             <div className="font-medium text-fitcity text-sm">{signup.membershipName}</div>
                             <div className="text-xs text-white/50">€{signup.membershipPrice}/{signup.membershipTerm}</div>
+                            <div className="text-xs text-white/40 mt-0.5">
+                              Start: {new Date(signup.startDate).toLocaleDateString('nl-NL')}
+                            </div>
                           </td>
 
                           {/* Betaald checkbox */}
@@ -250,11 +253,27 @@ const Admin = () => {
                           <tr className="bg-white/[0.03]">
                             <td colSpan="5" className="px-4 py-6">
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {/* Startdatum */}
+                                {/* Geboortedatum */}
                                 <div>
-                                  <label className="block text-xs text-white/60 mb-1">Startdatum</label>
+                                  <label className="block text-xs text-white/60 mb-1">Geboortedatum</label>
                                   <div className="text-sm text-white/80">
-                                    {new Date(signup.startDate).toLocaleDateString('nl-NL')}
+                                    {new Date(signup.dateOfBirth).toLocaleDateString('nl-NL')}
+                                  </div>
+                                </div>
+
+                                {/* Adres */}
+                                <div>
+                                  <label className="block text-xs text-white/60 mb-1">Adres</label>
+                                  <div className="text-sm text-white/80">
+                                    {signup.street} {signup.houseNumber}{signup.houseNumberAddition || ''}
+                                  </div>
+                                </div>
+
+                                {/* Postcode + Plaats */}
+                                <div>
+                                  <label className="block text-xs text-white/60 mb-1">Postcode + Plaats</label>
+                                  <div className="text-sm text-white/80">
+                                    {signup.postalCode} {signup.city}
                                   </div>
                                 </div>
 
