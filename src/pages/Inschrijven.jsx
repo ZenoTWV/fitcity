@@ -195,7 +195,7 @@ const Inschrijven = () => {
       } else if (!/^NL[0-9]{2}[A-Z]{4}[0-9]{10}$/i.test(formData.iban.replace(/\s/g, ''))) {
         newErrors.iban = 'Ongeldig IBAN (NL formaat)';
       }
-      if (!formData.agreeTerms) newErrors.agreeTerms = 'Je moet akkoord gaan';
+      if (!formData.agreeTerms) newErrors.agreeTerms = 'Akkoord gaan met de voorwaarden is verplicht';
     }
 
     setErrors(newErrors);

@@ -27,9 +27,11 @@ export async function onRequestPost(context) {
     // Update admin fields
     await updateSignupAdminFields(env.DB, signupId, paidInPerson, adminNotes);
 
-    // If marked as paid in person, update status to 'paid'
+    // Update status based on paid status
     if (paidInPerson) {
       await updateSignupStatus(env.DB, signupId, 'paid');
+    } else {
+      await updateSignupStatus(env.DB, signupId, 'pending_pickup');
     }
 
     return new Response(JSON.stringify({ success: true }), {

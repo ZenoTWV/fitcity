@@ -75,7 +75,7 @@ export function validateSignupInput(data) {
   }
 
   if (!data.agreeTerms) {
-    errors.push('Je moet akkoord gaan met de voorwaarden');
+    errors.push('Akkoord gaan met de voorwaarden is verplicht');
   }
 
   // IBAN validation (required for no-payment flow)
