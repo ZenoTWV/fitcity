@@ -89,8 +89,8 @@ const Home = () => {
         </div>
         <div className="overflow-hidden rounded-3xl border border-white/10">
           <img
-            src="/omgeving-overview.jpeg"
-            alt="FitCity gymzaal overzicht"
+            src="/upscalemedia-transformed(23).jpeg"
+            alt="FitCity team voor de gym"
             className="h-full w-full object-cover"
             loading="lazy"
             decoding="async"
